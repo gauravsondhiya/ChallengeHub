@@ -1,13 +1,22 @@
-// const fs = require('fs');
-import fs from "fs"
-import ytdl from "ytdl-core";
-// const ytdl = require('ytdl-core');
+import express from 'express';
+import { connectDB } from './config/db.js';
+import authRoutes from './routes/auth.routes.js';
 
-const videoUrl = 'https://youtu.be/BcqxLCWn-CE?si=iod-fA0QYz4DBcuS'; // replace with your YouTube video URL
-const outputFileName = 'youtube_video.mp4';
+import dotenv from 'dotenv';
+dotenv.config();
 
-ytdl(videoUrl, { quality: 'highest' })
-    .pipe(fs.createWriteStream(outputFileName))
-    .on('finish', () => {
-        console.log('✅ Download complete');
-    });
+const app = express();
+app.use(express.json());
+
+// Connect Database
+connectDB();
+
+// Routes
+app.use('/api/auth', authRoutes);
+
+
+// Server Listen
+const PORT = process.env.PORT
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
